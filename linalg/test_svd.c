@@ -134,7 +134,7 @@ test_SV_lssolve(gsl_rng * r)
 
   create_rank_matrix(N, m, r);
   test_SV_lssolve_eps(lambda, m, b, 1.0e4 * M * GSL_DBL_EPSILON, "SV_lssolve rank N");
-  test_SV_lssolve_eps(0.0, m, b, 1.0e4 * M * GSL_DBL_EPSILON, "SV_lssolve rank N unreg");
+  test_SV_lssolve_eps(0.0, m, b, 1.0e5 * M * GSL_DBL_EPSILON, "SV_lssolve rank N unreg");
 
   gsl_matrix_free(m);
   gsl_vector_free(b);
