@@ -182,6 +182,25 @@ gsl_linalg_SV_solve (const gsl_matrix * U,
                      const gsl_vector * b,
                      gsl_vector * x);
 
+int
+gsl_linalg_SV_solve2 (const double tol,
+                      const gsl_matrix * U,
+                      const gsl_matrix * V,
+                      const gsl_vector * S,
+                      const gsl_vector * b,
+                      gsl_vector * x,
+                      gsl_vector * work);
+
+int
+gsl_linalg_SV_lssolve (const double lambda,
+                       const gsl_matrix * U,
+                       const gsl_matrix * V,
+                       const gsl_vector * S,
+                       const gsl_vector * b,
+                       gsl_vector * x,
+                       double * rnorm,
+                       gsl_vector * work);
+
 int gsl_linalg_SV_leverage(const gsl_matrix *U, gsl_vector *h);
 
 

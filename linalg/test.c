@@ -400,6 +400,7 @@ gsl_matrix * moler10;
 #include "test_qr.c"
 #include "test_qrc.c"
 #include "test_qr_band.c"
+#include "test_svd.c"
 
 int
 test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps)
@@ -1473,22 +1474,38 @@ test_SV_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_matrix * q  = gsl_matrix_alloc(dim,dim);
   gsl_vector * d = gsl_vector_alloc(dim);
   gsl_vector * x = gsl_vector_calloc(dim);
+  gsl_vector * x2 = gsl_vector_calloc(dim);
+  gsl_vector * work = gsl_vector_alloc(dim);
+
   gsl_matrix_memcpy(u,m);
-  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
+
+  for(i = 0; i < dim; i++)
+    gsl_vector_set(rhs, i, i+1.0);
+
   s += gsl_linalg_SV_decomp(u, q, d, x);
   s += gsl_linalg_SV_solve(u, q, d, rhs, x);
-  for(i=0; i<dim; i++) {
-    int foo = check(gsl_vector_get(x, i), actual[i], eps);
-    if(foo) {
-      printf("%3lu[%lu]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
-    }
-    s += foo;
+  s += gsl_linalg_SV_solve2(0.0, u, q, d, rhs, x2, work);
+
+  for(i=0; i<dim; i++)
+    {
+      int foo = check(gsl_vector_get(x, i), actual[i], eps);
+      int foo2 = check(gsl_vector_get(x2, i), actual[i], eps);
+
+      if (foo)
+        printf("%3lu[%lu]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+      if (foo2)
+        printf("solve2 %3lu[%lu]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x2, i), actual[i]);
+
+      s += foo + foo2;
   }
+
   gsl_vector_free(x);
+  gsl_vector_free(x2);
   gsl_vector_free(d);
   gsl_matrix_free(u);
   gsl_matrix_free(q);
   gsl_vector_free(rhs);
+  gsl_vector_free(work);
 
   return s;
 }
@@ -3254,6 +3271,7 @@ main(void)
   gsl_test(test_SV_decomp_jacobi(),      "Singular Value Decomposition (Jacobi)");
   gsl_test(test_SV_decomp_mod(),         "Singular Value Decomposition (Mod)");
   gsl_test(test_SV_solve(),              "SVD Solve");
+  gsl_test(test_SV_lssolve(r),           "SVD LS Solve");
 
   gsl_test(test_cholesky_decomp_unit(),  "Cholesky Decomposition [unit triangular]");
   gsl_test(test_cholesky_solve(),        "Cholesky Solve");

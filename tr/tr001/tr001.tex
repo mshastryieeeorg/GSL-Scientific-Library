@@ -287,40 +287,47 @@ u &= \sin{\theta}
 \end{align}
 Applying these recurrence relations to a general ALF
 $T_l^m(x)$ as defined in Eq.~\eqref{eqn:Tlm} yields the following,
+\begin{subequations}
 \begin{alignat}{3}
 T_l^m(x) &= a_l^m x T_{l-1}^m(x) + b_l^m T_{l-2}^m(x), & \qquad l \geq m + 2 \label{eqn:R1} \\
 T_{l+1}^l(x) &= c_l x T_l^l(x), & \qquad l \geq 0 \\
-T_l^l(x) &= d_l u T_{l-1}^{l-1}(x), & \qquad l \geq 1 \label{eqn:R3} \\
+T_l^l(x) &= d_l u T_{l-1}^{l-1}(x), & \qquad l \geq 1 \label{eqn:R3}
+\end{alignat}
+\end{subequations}
+with parameters
+\begin{subequations}
+\begin{alignat}{3}
 a_l^m &= \frac{2l-1}{\sqrt{(l+m)(l-m)}} \frac{A_l^m}{A_{l-1}^m}, & \qquad l \geq m + 2 \\
 b_l^m &= -\sqrt{\frac{(l+m-1)(l-m-1)}{(l+m)(l-m)}} \frac{A_l^m}{A_{l-2}^m}, & \qquad l \geq m + 2 \\
 c_l &= \sqrt{2l+1} \frac{A_{l+1}^l}{A_l^l}, & \qquad l \geq 0 \\
 d_l &= \eta_{CS} \sqrt{\frac{2l-1}{2l}} \frac{A_l^l}{A_{l-1}^{l-1}}, & \qquad l \geq 1
 \end{alignat}
+\end{subequations}
 Here, $T_l^m(x)$ can be any of $P_l^m(x), S_l^m(x), Y_l^m(x)$, $N_l^m(x)$,
 or $R_l^m(x)$. Eqs.~\eqref{eqn:R1} to \eqref{eqn:R3} form the basis of
 the algorithm used by GSL to compute the ALFs for all degrees and orders.
 The coefficients $a_l^m,b_l^m,c_l,d_l$ are precomputed when the user
-calls the function {\tt gsl\_sf\_legendre\_precompute} and are then
+calls the function {\tt gsl\_sf\_alf\_precompute} and are then
 used to efficiently evaluate the ALFs for any number of arguments $x$.
 Table~\ref{tab:recurrence} presents the coefficients for each
 normalized ALF.
 
 \begin{table}[ht]
 \centering
-\footnotesize
-\caption{Coefficients of recurrence relations for different normalizations of ALFs.}
-\begin{tabular}{cccccc}
+\scriptsize
+\caption{Coefficients of recurrence relations for different normalizations of ALFs. The last column contains the seed values needed to start the recurrence.}
+\begin{tabular}{@{}ccccccc@{}}
 \toprule
-Normalization & Notation & $a_l^m$ & $b_l^m$ & $c_l$ & $d_l$ \\
+Normalization & Notation & $a_l^m$ & $b_l^m$ & $c_l$ & $d_l$ & $T_0^0(x)$ \\
 \midrule
-Unnormalized & $P_l^m(x)$ & $\frac{2l-1}{l-m}$ & $-\frac{l+m-1}{l-m}$ & $2l+1$ & $\eta_{CS} \left( 2l-1 \right)$ \\
+Unnormalized & $P_l^m(x)$ & $\frac{2l-1}{l-m}$ & $-\frac{l+m-1}{l-m}$ & $2l+1$ & $\eta_{CS} \left( 2l-1 \right)$ & $1$ \\
 \\
-Schmidt & $S_l^m(x)$ & $\frac{2l-1}{\sqrt{(l+m)(l-m)}}$ & $-\sqrt{\frac{(l+m-1)(l-m-1)}{(l+m)(l-m)}}$ & $\sqrt{2l+1}$ & $\left\{ \begin{array}{cc} \eta_{CS} & l = 1 \\ \eta_{CS} \sqrt{1 - \frac{1}{2l}} & l > 1 \end{array} \right.$ \\
+Schmidt & $S_l^m(x)$ & $\frac{2l-1}{\sqrt{(l+m)(l-m)}}$ & $-\sqrt{\frac{(l+m-1)(l-m-1)}{(l+m)(l-m)}}$ & $\sqrt{2l+1}$ & $\left\{ \begin{array}{cc} \eta_{CS} & l = 1 \\ \eta_{CS} \sqrt{1 - \frac{1}{2l}} & l > 1 \end{array} \right.$ & $1$ \\
 \\
-Spherical Harmonic & $Y_l^m(x)$ & $\sqrt{\frac{(2l+1)(2l-1)}{(l+m)(l-m)}}$ & $-\sqrt{\frac{(l+m-1)(l-m-1)(2l+1)}{(l+m)(l-m)(2l-3)}}$ & $\sqrt{2l+3}$ & $\eta_{CS} \sqrt{1 + \frac{1}{2l}}$ \\
+Spherical Harmonic & $Y_l^m(x)$ & $\sqrt{\frac{(2l+1)(2l-1)}{(l+m)(l-m)}}$ & $-\sqrt{\frac{(l+m-1)(l-m-1)(2l+1)}{(l+m)(l-m)(2l-3)}}$ & $\sqrt{2l+3}$ & $\eta_{CS} \sqrt{1 + \frac{1}{2l}}$ & $\frac{1}{2\sqrt{\pi}}$ \\
 \\
-Full & $N_l^m(x)$ & $\sqrt{\frac{(2l+1)(2l-1)}{(l+m)(l-m)}}$ & $-\sqrt{\frac{(l+m-1)(l-m-1)(2l+1)}{(l+m)(l-m)(2l-3)}}$ & $\sqrt{2l+3}$ & $\eta_{CS} \sqrt{1 + \frac{1}{2l}}$ \\
-$4\pi$ & $R_l^m(x)$ & $\sqrt{\frac{(2l+1)(2l-1)}{(l+m)(l-m)}}$ & $-\sqrt{\frac{(l+m-1)(l-m-1)(2l+1)}{(l+m)(l-m)(2l-3)}}$ & $\sqrt{2l+3}$ & $\left\{ \begin{array}{cc} \eta_{CS} \sqrt{3} & l = 1 \\ \eta_{CS} \sqrt{1 + \frac{1}{2l}} & l > 1 \end{array} \right.$ \\
+Full & $N_l^m(x)$ & $\sqrt{\frac{(2l+1)(2l-1)}{(l+m)(l-m)}}$ & $-\sqrt{\frac{(l+m-1)(l-m-1)(2l+1)}{(l+m)(l-m)(2l-3)}}$ & $\sqrt{2l+3}$ & $\eta_{CS} \sqrt{1 + \frac{1}{2l}}$ & $\frac{1}{\sqrt{2}}$ \\
+$4\pi$ & $R_l^m(x)$ & $\sqrt{\frac{(2l+1)(2l-1)}{(l+m)(l-m)}}$ & $-\sqrt{\frac{(l+m-1)(l-m-1)(2l+1)}{(l+m)(l-m)(2l-3)}}$ & $\sqrt{2l+3}$ & $\left\{ \begin{array}{cc} \eta_{CS} \sqrt{3} & l = 1 \\ \eta_{CS} \sqrt{1 + \frac{1}{2l}} & l > 1 \end{array} \right.$ & $1$ \\
 \bottomrule
 \end{tabular}
 \label{tab:recurrence}
@@ -355,6 +362,35 @@ at the end points $x = \pm 1$. For example,
 \end{equation}
 which is undefined at the end points. However, the alternative derivative with
 respect to $\theta$ is defined at the end points for all degrees and orders.
+
+\subsection{First Derivatives with Respect to $x$}
+
+\begin{subequations}
+\begin{alignat}{3}
+\frac{d}{dx} T_l^m(x) &= a_l^m \left( T_{l-1}^m(x) + x \frac{d}{dx} T_{l-1}^m(x) \right) + b_l^m \frac{d}{dx} T_{l-2}^m(x), & \qquad l \geq m + 2 \\
+\frac{d}{dx} T_{l+1}^l(x) &= c_l \left( T_l^l(x) + x \frac{d}{dx} T_l^l(x) \right), & \qquad l \geq 0 \\
+\frac{d}{dx} T_l^l(x) &= d_l \left( -\frac{x}{u} T_{l-1}^{l-1}(x) + u \frac{d}{dx} T_{l-1}^{l-1}(x) \right), & \qquad l \geq 1
+\end{alignat}
+\end{subequations}
+
+To initialize the recurrence, we need the quantities $T_0^0(x)$ and $d T_0^0(x) / dx$. The latter
+term is zero for all normalizations.
+
+\subsection{First Derivatives with Respect to $\theta$}
+
+\begin{subequations}
+\begin{alignat}{3}
+\frac{d}{d \theta} T_l^m(x) &= a_l^m \left( -u T_{l-1}^m(x) + x \frac{d}{d \theta} T_{l-1}^m(x) \right) + b_l^m \frac{d}{d \theta} T_{l-2}^m(x), & \qquad l \geq m + 2 \\
+\frac{d}{d \theta} T_{l+1}^l(x) &= c_l \left( -u T_l^l(x) + x \frac{d}{d \theta} T_l^l(x) \right), & \qquad l \geq 0 \\
+\frac{d}{d \theta} T_l^l(x) &= d_l \left( x T_{l-1}^{l-1}(x) + u \frac{d}{d \theta} T_{l-1}^{l-1}(x) \right), & \qquad l \geq 1
+\end{alignat}
+\end{subequations}
+
+To initialize the recurrence, we need the quantities $T_0^0(x)$ and $d T_0^0(x) / d\theta$. The latter
+term is zero for all normalizations.
+
+\subsection{Higher order Derivatives with Respect to $\theta$}
+
 \citet{bosch2000} derives the following recurrence relations for any order
 derivative with respect to $\theta$:
 \begin{alignat}{3}

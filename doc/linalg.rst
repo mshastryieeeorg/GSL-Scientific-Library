@@ -1348,6 +1348,31 @@ Mathematically, the "full" SVD is defined with :math:`U` as an
    system is solved in the least squares sense, returning the solution
    :data:`x` which minimizes :math:`||A x - b||_2`.
 
+.. function:: int gsl_linalg_SV_solve2 (const double tol, const gsl_matrix * U, const gsl_matrix * V, const gsl_vector * S, const gsl_vector * b, gsl_vector * x, gsl_vector * work)
+
+   This function solves the system :math:`A x = b` using the singular value
+   decomposition (:data:`U`, :data:`S`, :data:`V`) of :math:`A` which must 
+   have been computed previously with :func:`gsl_linalg_SV_decomp`.
+
+   Singular values which satisfy, :math:`s_i \leq tol \times s_{max}` are excluded
+   from the solution. Additional workspace of length :math:`N` must be provided in
+   :data:`work`.
+
+   In the over-determined case where :data:`A` has more rows than columns the
+   system is solved in the least squares sense, returning the solution
+   :data:`x` which minimizes :math:`||b - A x||_2`.
+
+.. function:: int gsl_linalg_SV_lssolve (const double lambda, const gsl_matrix * U, const gsl_matrix * V, const gsl_vector * S, const gsl_vector * b, gsl_vector * x, double * rnorm, gsl_vector * work)
+
+   This function solves the regularized least squares problem,
+
+   .. math:: \min_x || b - A x ||^2 + \lambda^2 ||x||^2
+
+   using the singular value decomposition (:data:`U`, :data:`S`, :data:`V`) of
+   :math:`A` which must have been computed previously with :func:`gsl_linalg_SV_decomp`.
+   The residual norm :math:`||b - Ax||` is stored in :data:`rnorm` on output.
+   Additional workspace of size :math:`M+N` is required in :data:`work`.
+
 .. function:: int gsl_linalg_SV_leverage (const gsl_matrix * U, gsl_vector * h)
 
    This function computes the statistical leverage values :math:`h_i` of a matrix :math:`A`
