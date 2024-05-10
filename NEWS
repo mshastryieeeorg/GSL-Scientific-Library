@@ -1,5 +1,7 @@
 * What is new in gsl-2.8:
 
+** apply patch for bug #63679 (F. Weimer)
+
 ** updated multilarge TSQR method to store ||z_2|| and
    provide it to the user
 
@@ -8,8 +10,6 @@
 ** fix for bug #59624
 
 ** fix for bug #59781 (M. Dunlap)
-
-** optimized cspline and cspline_periodic interpolation
 
 ** rewrote array routines for associated Legendre
    functions to improve efficiency; alternative
