@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_legendre.h>
+#include <gsl/gsl_sf_alf.h>
 
 int
 main(void)
@@ -14,11 +15,9 @@ main(void)
   double * d2Plm = malloc(nlm * sizeof(double));
   double x;
 
-  gsl_sf_legendre_precompute(GSL_SF_LEGENDRE_SPHARM, lmax, 1, Plm);
-
-  for (x = -1.0; x <= 1.0; x += 0.01)
+  for (x = -0.99; x <= 0.99; x += 0.01)
     {
-      gsl_sf_legendre_deriv2_alt_arrayx(GSL_SF_LEGENDRE_SPHARM, lmax, x, Plm, dPlm, d2Plm);
+      gsl_sf_legendre_deriv2_alt_array(GSL_SF_LEGENDRE_SPHARM, lmax, x, Plm, dPlm, d2Plm);
       printf("%f %e %e %e\n", x, Plm[idx21], dPlm[idx21], d2Plm[idx21]);
     }
 
